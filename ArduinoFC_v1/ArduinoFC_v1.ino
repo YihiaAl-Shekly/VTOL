@@ -2,10 +2,10 @@
 #include <MPU6050.h>
 
 MPU6050 mpu;
-//yaw
+//yaw axis as calculated differently in this version because i need a cumpas to do that so for now i'm just sending a raw garo valew (not accurate)
 unsigned long timer = 0;
 float timeStep = 0.01;
-int yaw;
+float yaw = 0;
 
 void setup() 
 {
@@ -24,7 +24,8 @@ void setup()
 
 void loop()
 { 
-  //if (Serial.available() > 0) {
+  // set timer for the yaw
+  timer = millis();
   // Read normalized values 
   Vector normAccel = mpu.readNormalizeAccel();
   // yaw
@@ -33,10 +34,8 @@ void loop()
   int pitch = -(atan2(normAccel.XAxis, sqrt(normAccel.YAxis*normAccel.YAxis + normAccel.ZAxis*normAccel.ZAxis))*180.0)/M_PI;
   int roll = (atan2(normAccel.YAxis, normAccel.ZAxis)*180.0)/M_PI;
   //yaw
-  timer = millis();
   yaw = yaw + norm.ZAxis * timeStep;
   // Output
-  //Serial.print(" Pitch = ");
   Serial.print(pitch);
   Serial.print(",");
   Serial.print(roll);
@@ -47,9 +46,6 @@ void loop()
  
   
   delay((timeStep*1000) - (millis() - timer));
-  Serial.println();
-  //delay(10); 
-   //println(" Pitch = " +pitch + " Roll = "+roll+" Yaw = "+yaw);
 
-  //}
+  Serial.println();
 }
